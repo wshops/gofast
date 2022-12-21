@@ -1,8 +1,4 @@
 # Gofast
-
-[![Test](https://github.com/wshops/gofast/workflows/Test/badge.svg)](https://github.com/wshops/gofast/actions?query=workflow%3ATest)
-[![Lint](https://github.com/wshops/gofast/workflows/Lint/badge.svg)](https://github.com/wshops/gofast/actions?query=workflow%3ALint)
-[![codecov](https://codecov.io/gh/wshops/gofast/branch/main/graph/badge.svg)](https://codecov.io/gh/wshops/gofast)
 [![Go Report Card](https://goreportcard.com/badge/github.com/wshops/gofast)](https://goreportcard.com/report/github.com/wshops/gofast)
 
 ⚡️ Gofast is a HTTP client based on [fasthttp](https://github.com/valyala/fasthttp) with zero memory allocation. 
