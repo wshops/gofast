@@ -21,7 +21,7 @@ type Config struct {
 
 // ConfigDefault is the default config
 var ConfigDefault = Config{
-	Name:                     "gofast",
+	Name:                     "wshops",
 	NoDefaultUserAgentHeader: false,
 	ReadTimeout:              6 * time.Second,
 	WriteTimeout:             6 * time.Second,

@@ -1,7 +1,7 @@
 package gofast
 
 import (
-	"encoding/json"
+	"github.com/goccy/go-json"
 	"log"
 
 	"github.com/valyala/fasthttp"
