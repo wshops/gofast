@@ -24,9 +24,10 @@ func TestClient_Get(t *testing.T) {
 		})
 
 		var out struct{ Foo string }
-		err := c.Get(testURL, &out, nil)
+		err, code := c.Get(testURL, &out, nil)
 		assert.NoError(t, err)
 		assert.Equal(t, "bar", out.Foo)
+		assert.Equal(t, 200, code)
 		assert.Equal(t, testURL, <-ch)
 	})
 
@@ -37,9 +38,9 @@ func TestClient_Get(t *testing.T) {
 			ctx.SetBodyString("something wrong")
 		})
 
-		err := c.Get(testURL, nil, nil)
-		assert.Error(t, err)
-		assert.Equal(t, "code: 500, body: something wrong", err.Error())
+		err, code := c.Get(testURL, nil, nil)
+		assert.NoError(t, err)
+		assert.NotEqual(t, 200, code)
 	})
 
 	t.Run("get with header", func(t *testing.T) {
@@ -50,8 +51,9 @@ func TestClient_Get(t *testing.T) {
 			ch <- string(ctx.Request.Header.Peek("foo"))
 		})
 
-		err := c.Get(testURL, nil, Header{"foo": "bar"})
+		err, code := c.Get(testURL, nil, Header{"foo": "bar"})
 		assert.NoError(t, err)
+		assert.Equal(t, 200, code)
 		assert.Equal(t, "bar", <-ch)
 	})
 }
@@ -66,8 +68,9 @@ func TestClient_Post(t *testing.T) {
 		})
 
 		in := Body{"foo": "bar"}
-		err := c.Post(testURL, &in, nil, nil)
+		err, code := c.Post(testURL, &in, nil, nil)
 		assert.NoError(t, err)
+		assert.Equal(t, 200, code)
 		assert.JSONEq(t, `{"foo":"bar"}`, <-ch)
 	})
 
@@ -76,8 +79,9 @@ func TestClient_Post(t *testing.T) {
 		c.fastClient = mockFastHTTPClient(func(ctx *fasthttp.RequestCtx) {})
 
 		in := make(chan struct{})
-		err := c.Post(testURL, in, nil, nil)
+		err, code := c.Post(testURL, in, nil, nil)
 		assert.Error(t, err)
+		assert.Equal(t, 0, code)
 		assert.Contains(t, err.Error(), "encode request:")
 	})
 
@@ -90,8 +94,9 @@ func TestClient_Post(t *testing.T) {
 		})
 
 		var out struct{ Foo string }
-		err := c.Post(testURL, nil, &out, nil)
+		err, code := c.Post(testURL, nil, &out, nil)
 		assert.Error(t, err)
+		assert.Equal(t, 0, code)
 		assert.Contains(t, err.Error(), "decode response:")
 	})
 }
@@ -100,21 +105,21 @@ func TestClient_Put(t *testing.T) {
 	c := New()
 	c.fastClient = mockFastHTTPClient(func(ctx *fasthttp.RequestCtx) {})
 
-	err := c.Put(testURL, nil, nil, nil)
+	err, _ := c.Put(testURL, nil, nil, nil)
 	assert.NoError(t, err)
 }
 
 func TestClient_Patch(t *testing.T) {
 	c := New()
 	c.fastClient = mockFastHTTPClient(func(ctx *fasthttp.RequestCtx) {})
-	err := c.Patch(testURL, nil, nil, nil)
+	err, _ := c.Patch(testURL, nil, nil, nil)
 	assert.NoError(t, err)
 }
 
 func TestClient_Delete(t *testing.T) {
 	c := New()
 	c.fastClient = mockFastHTTPClient(func(ctx *fasthttp.RequestCtx) {})
-	err := c.Delete(testURL, nil, nil, nil)
+	err, _ := c.Delete(testURL, nil, nil, nil)
 	assert.NoError(t, err)
 }
 
@@ -130,7 +135,7 @@ func BenchmarkPostJSON(b *testing.B) {
 			Foo: "bar",
 		}
 		for pb.Next() {
-			err := c.Post(testURL, &in, nil, Header{"foo": "bar"})
+			err, _ := c.Post(testURL, &in, nil, Header{"foo": "bar"})
 			if err != nil {
 				b.Fatalf("unexpected error: %s", err)
 			}
@@ -153,7 +158,7 @@ func BenchmarkPostURLEncode(b *testing.B) {
 			"foo": "bar",
 		}
 		for pb.Next() {
-			err := c.Post(testURL, in, nil, Header{"foo": "bar"})
+			err, _ := c.Post(testURL, in, nil, Header{"foo": "bar"})
 			if err != nil {
 				b.Fatalf("unexpected error: %s", err)
 			}
