@@ -32,10 +32,13 @@ func main() {
 
 	var out Out
 	uri := "http://echo.jsontest.com/hello/world"
-	if err := fast.Get(uri, &out, nil); err != nil {
+	err, code := fast.Get(uri, &out, nil)
+	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Printf("hello %v", out.Hello)
+	if code == 200 {
+		fmt.Printf("hello %v", out.Hello)
+    }
 	// hello world
 }
 ```
@@ -66,10 +69,13 @@ body := CreateToken{
     Secret: "my-secret",
 }
 var token Token
-if err := fast.Post(uri, &body, &token, nil); err != nil {
+err, code := fast.Post(uri, &body, &token, nil)
+if err != nil {
     log.Fatalln(err)
 }
-fmt.Printf("token: %v, expired_at: %v", token.Token, token.ExpiredAt)
+if code != 200 {
+	fmt.Printf("token: %v, expired_at: %v", token.Token, token.ExpiredAt)
+}
 ```
 
 ### Get with header
@@ -85,7 +91,7 @@ fast := gofast.New()
 var user User
 uri := "https://example.com/api/v1/users/100"
 h := gofast.Header{fasthttp.HeaderAuthorization: "Bearer My-JWT"}
-if err := fast.Get(uri, &user, h); err != nil {
+if err,_ := fast.Get(uri, &user, h); err != nil {
     log.Fatalln(err)
 }
 fmt.Printf("id: %v, name: %v", user.ID, user.Name)
@@ -107,13 +113,12 @@ body := gofast.Body{
     "secret": "my-secret",
 }
 var token string
-if err := fast.Post(uri, body, &token, nil); err != nil {
+if err,_ := fast.Post(uri, body, &token, nil); err != nil {
     log.Fatalln(err)
 }
 ```
 
-### Customize error handler
-
+### Customize error handler (*deprecated*)
 Error handler will handle non 2xx HTTP status code.
 
 ```go
