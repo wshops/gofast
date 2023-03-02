@@ -5,16 +5,16 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-type RequestEncoder func(req *fasthttp.Request, in interface{}) error
+type RequestEncoder func(req *fasthttp.Request, in any) error
 
-type ResponseDecoder func(resp *fasthttp.Response, out interface{}) error
+type ResponseDecoder func(resp *fasthttp.Response, out any) error
 
-var JSONEncoder = func(req *fasthttp.Request, in interface{}) error {
+var JSONEncoder = func(req *fasthttp.Request, in any) error {
 	req.Header.SetContentType("application/json")
 	return json.NewEncoder(req.BodyWriter()).Encode(in)
 }
 
-var JSONDecoder = func(resp *fasthttp.Response, out interface{}) error {
+var JSONDecoder = func(resp *fasthttp.Response, out any) error {
 	if err := json.Unmarshal(resp.Body(), out); err != nil {
 		//log.Printf("[gofast] response decode failed - code: %v, body: %v", resp.StatusCode(), string(resp.Body()))
 		return err
@@ -22,7 +22,7 @@ var JSONDecoder = func(resp *fasthttp.Response, out interface{}) error {
 	return nil
 }
 
-var URLEncoder = func(req *fasthttp.Request, in interface{}) error {
+var URLEncoder = func(req *fasthttp.Request, in any) error {
 	args := fasthttp.AcquireArgs()
 	defer fasthttp.ReleaseArgs(args)
 
@@ -36,7 +36,7 @@ var URLEncoder = func(req *fasthttp.Request, in interface{}) error {
 	return nil
 }
 
-var TextDecoder = func(resp *fasthttp.Response, out interface{}) error {
+var TextDecoder = func(resp *fasthttp.Response, out any) error {
 	s := out.(*string)
 	*s = string(resp.Body())
 	return nil

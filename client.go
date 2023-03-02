@@ -33,27 +33,33 @@ func New(config ...Config) *Client {
 	}
 }
 
-func (c *Client) Get(uri string, out interface{}, header Header) (error, int) {
+func (c *Client) Get(uri string, out any, header Header) (error, int) {
 	return c.do(uri, fasthttp.MethodGet, nil, out, header)
 }
 
-func (c *Client) Post(uri string, in, out interface{}, header Header) (error, int) {
+func (c *Client) Post(uri string, in, out any, header Header) (error, int) {
 	return c.do(uri, fasthttp.MethodPost, in, out, header)
 }
 
-func (c *Client) Put(uri string, in, out interface{}, header Header) (error, int) {
+func (c *Client) PostForm(uri string, in, out any, header Header) (error, int) {
+	cfg := configDefault()
+	cfg.RequestEncoder = URLEncoder
+	return New(cfg).do(uri, fasthttp.MethodPost, in, out, header)
+}
+
+func (c *Client) Put(uri string, in, out any, header Header) (error, int) {
 	return c.do(uri, fasthttp.MethodPut, in, out, header)
 }
 
-func (c *Client) Patch(uri string, in, out interface{}, header Header) (error, int) {
+func (c *Client) Patch(uri string, in, out any, header Header) (error, int) {
 	return c.do(uri, fasthttp.MethodPatch, in, out, header)
 }
 
-func (c *Client) Delete(uri string, in, out interface{}, header Header) (error, int) {
+func (c *Client) Delete(uri string, in, out any, header Header) (error, int) {
 	return c.do(uri, fasthttp.MethodDelete, in, out, header)
 }
 
-func (c *Client) do(uri string, method string, in, out interface{}, header Header) (err error, code int) {
+func (c *Client) do(uri string, method string, in, out any, header Header) (err error, code int) {
 	req, resp := fasthttp.AcquireRequest(), fasthttp.AcquireResponse()
 	defer func() {
 		fasthttp.ReleaseRequest(req)
