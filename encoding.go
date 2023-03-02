@@ -2,8 +2,6 @@ package gofast
 
 import (
 	"github.com/goccy/go-json"
-	"log"
-
 	"github.com/valyala/fasthttp"
 )
 
@@ -18,7 +16,7 @@ var JSONEncoder = func(req *fasthttp.Request, in interface{}) error {
 
 var JSONDecoder = func(resp *fasthttp.Response, out interface{}) error {
 	if err := json.Unmarshal(resp.Body(), out); err != nil {
-		log.Printf("[gofast] response decode failed - code: %v, body: %v", resp.StatusCode(), string(resp.Body()))
+		//log.Printf("[gofast] response decode failed - code: %v, body: %v", resp.StatusCode(), string(resp.Body()))
 		return err
 	}
 	return nil
