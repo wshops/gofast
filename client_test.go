@@ -67,7 +67,7 @@ func TestClient_Post(t *testing.T) {
 			ch <- string(ctx.Request.Body())
 		})
 
-		in := Body{"foo": "bar"}
+		in := map[string]string{"foo": "bar"}
 		err, code := c.Post(testURL, &in, nil, nil)
 		assert.NoError(t, err)
 		assert.Equal(t, 200, code)
@@ -154,7 +154,7 @@ func BenchmarkPostURLEncode(b *testing.B) {
 
 	b.ReportAllocs()
 	b.RunParallel(func(pb *testing.PB) {
-		in := Body{
+		in := map[string]string{
 			"foo": "bar",
 		}
 		for pb.Next() {

@@ -8,7 +8,7 @@ import (
 
 type Header map[string]string
 
-type Body map[string]string
+//type Body map[string]string
 
 type Client struct {
 	fastClient      *fasthttp.Client
