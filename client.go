@@ -41,7 +41,7 @@ func (c *Client) Post(uri string, in, out any, header Header) (error, int) {
 	return c.do(uri, fasthttp.MethodPost, in, out, header)
 }
 
-func (c *Client) PostForm(uri string, in, out any, header Header) (error, int) {
+func (c *Client) PostForm(uri string, in map[string]string, out any, header Header) (error, int) {
 	cfg := configDefault()
 	cfg.RequestEncoder = URLEncoder
 	return New(cfg).do(uri, fasthttp.MethodPost, in, out, header)
