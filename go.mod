@@ -3,7 +3,7 @@ module github.com/wshops/gofast
 go 1.20
 
 require (
-	github.com/goccy/go-json v0.10.0
+	github.com/goccy/go-json v0.10.1
 	github.com/valyala/fasthttp v1.44.0
 )
 
